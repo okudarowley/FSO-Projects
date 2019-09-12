@@ -1,18 +1,25 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
+import axios from 'axios'
 import Filter from './components/Filter'
 import PersonForm from './components/PersonForm'
 import Persons from './components/Persons'
 
 const App = () => {
-	const [persons, setPersons] = useState([										// state to keep track of people
-		{ name: 'Arto Hellas', pNumber: '444-321-1234' },
-		{ name: 'Ada Lovelace', pNumber: '23-45454-4343' },
-		{ name: 'Dan Abramov', pNumber: '2352424524524' },
-		{ name: 'Mary Poppendieck', pNumber: '2342355252' }
-	])
+	const [persons, setPersons] = useState([])									// state to keep track of people
 	const [newName, setNewName] = useState('')									// state to keep track of names in the input field
 	const [newPNumber, setNewPNumber] = useState('')							// state to keep track of number in the input field
 	const [filter, setFilter] = useState('')										// state to keep track of search filter input field
+
+	useEffect(() => {
+		console.log('effect')
+		axios
+			.get('http://localhost:3001/persons')
+			.then(response => {
+				console.log('promise fulfilled')
+				setPersons(response.data)
+			})
+	}, [])
+	console.log('render', persons.length, 'person')
 
 	const displayNames = () => {
 		let filteredSearch = persons.filter(person => person.name.toUpperCase().includes(filter.toUpperCase())) 		// filter out the not matching names
